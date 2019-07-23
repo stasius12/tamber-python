@@ -56,5 +56,6 @@ from tamber.resource import (
 )
 
 from tamber.error import(
-    TamberError
+    TamberError,
+    TamberTimeout,
 )

@@ -2,7 +2,6 @@ import sys
 import json
 import base64
 import tamber
-from error import TamberTimeout
 
 PYTHON_VERSION = sys.version_info[0]
 
@@ -16,7 +15,7 @@ elif PYTHON_VERSION == 3:
     from urllib.parse import urlencode
     b64encode = lambda s: base64.b64encode(s.encode('ascii')).decode('ascii')
 
-def call_api(method, url, api_url=None, project_key=None, engine_key=None, timeout=1, **params):
+def call_api(method, url, api_url=None, project_key=None, engine_key=None, timeout=3, **params):
     if api_url is None:
         api_url = tamber.get_api_url()
     if project_key is None:
@@ -49,7 +48,7 @@ def call_api(method, url, api_url=None, project_key=None, engine_key=None, timeo
     except HTTPError as e:
         resp = e
     except URLError as e:
-        raise TamberTimeout(e)
+        raise tamber.error.TamberTimeout(e)
     if PYTHON_VERSION < 3:
         data = json.load(resp)
     else:
