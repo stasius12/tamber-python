@@ -37,7 +37,7 @@ class APIResource():
     @classmethod
     def _flatten_args(cls, keys=None, **params):
         for k in params:
-            if not 'timeout' in params:
+            if not 'timeout' in k:
                 if isinstance(params[k], dict) or isinstance(params[k], list) or isinstance(params[k], TamberObject):
                     params[k] = json.dumps(params[k], cls=TamberJSONEncoder)
         if keys:
