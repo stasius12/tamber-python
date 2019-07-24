@@ -37,9 +37,8 @@ class APIResource():
     @classmethod
     def _flatten_args(cls, keys=None, **params):
         for k in params:
-            if not 'timeout' in k:
-                if isinstance(params[k], dict) or isinstance(params[k], list) or isinstance(params[k], TamberObject):
-                    params[k] = json.dumps(params[k], cls=TamberJSONEncoder)
+            if isinstance(params[k], dict) or isinstance(params[k], list) or isinstance(params[k], TamberObject):
+                params[k] = json.dumps(params[k], cls=TamberJSONEncoder)
         if keys:
             reserved = {'api_url', 'project_key', 'engine_key'}
             return dict((k, params[k]) for k in params if k in keys or k in reserved)
@@ -47,8 +46,11 @@ class APIResource():
 
     @classmethod
     def _call_api(cls, method, url, keys=None, **params):
-        args = cls._flatten_args(keys, **params)
-        timeout = params.get('timeout', 3)
+        try:
+            timeout = params.pop('timeout')
+        except KeyError:
+            timeout = 3
+        args = cls._flatten_args(keys, **params)   
         return api.call_api(method, url, timeout=timeout, **args)
 
 # item, user, behavior
